@@ -1,0 +1,18 @@
+{
+    "name": "github-loltrainerv2",
+    "version": "0.0.0",
+    "description": "Web game, sort of aim trainer but for league of legend",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "clementmenou",
+    "license": "ISC",
+    "dependencies": {
+        "babylonjs": "^6.23.0",
+        "earcut": "^2.2.4",
+        "lodash": "^4.17.21"
+    }
+  }
+  
