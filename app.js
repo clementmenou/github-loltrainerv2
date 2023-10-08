@@ -1,70 +1,33 @@
-import * as BABYLON from 'babylonjs';
+const express = require('express');
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
+// express app
+const app = express();
 
-const canvas = document.getElementById('renderCanvas');
+// register view engine
+app.set('view engine', 'ejs');
+// app.set('views', 'folder') // if you want to put views in a folder which isn't names "views"
 
-const engine = new BABYLON.Engine(canvas);
+// listen for requests
+// The code is read up to down, if a get correspond, it sendfile
+// "use" correspond to every url left
+app.listen(3000);
 
-const createScene = async function() {
-  const scene = new BABYLON.Scene(engine);
+app.get('/', (req, res) => {
+    // res.sendFile('./server/index.html', { root: __dirname}); // with express
+    res.render('index') // with ejs
+});
 
-  const camera = new BABYLON.ArcRotateCamera('camera', 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene)
-  
-  camera.setPosition(new BABYLON.Vector3(400, 800, -800));
-  camera.fov = .4;
+app.get('/about', (req, res) => {
+    // res.sendFile('./server/about.html', { root: __dirname});
+    res.render('about') // with ejs
+});
 
-  camera.attachControl();
+app.get('/about-us', (req, res) => {
+    // res.redirect('/about');
+    res.render('about') // with ejs
+});
 
-  const boxMaterial = new BABYLON.StandardMaterial();
-  const fontData = await (await fetch('/Montserrat_SemiBold.json')).json();
-
-  for(let i = 0; i < 5; i++){
-    let box = new BABYLON.MeshBuilder.CreateBox('myBox', {
-      size: 16,
-      height: 40
-    }, scene);
-    box.enableEdgesRendering();
-    box.edgesWidth = 100;
-    box.edgesColor = new BABYLON.Color4(0, 1, 1, 1);
-    boxMaterial.alpha = 0;
-    box.material = boxMaterial;
-    let boxCoordX = getRandomInt(-250, 250);
-    let boxCoordZ = getRandomInt(-250, 250);
-    box.position = new BABYLON.Vector3(boxCoordX, 15, boxCoordZ);
-
-    const text1 = BABYLON.MeshBuilder.CreateText('', 'A', fontData, {
-      size: 12,
-      depth: 1
-    }, scene);
-
-    const textMaterial = new BABYLON.StandardMaterial();
-    text1.material = textMaterial;
-    textMaterial.emissiveColor = new BABYLON.Color4(1, 1, 1, 1);
-
-    text1.position = new BABYLON.Vector3(0, 17, 8);
-  }
-
-
-  const ground = new BABYLON.MeshBuilder.CreateGround('', {
-    height: 4000,
-    width: 4000
-  });
-
-  const groundMaterial = new BABYLON.StandardMaterial();
-  groundMaterial.emissiveColor = new BABYLON.Color3(.1, .1, .1);
-  groundMaterial.alpha = .9;
-  ground.material = groundMaterial;
-
-  return scene;
-}
-
-const scene = await createScene();
-
-engine.runRenderLoop(function () {
-  scene.render();
+app.use((req, res) => {
+    // res.sendFile('./server/404.html', { root: __dirname });
+    res.status(404).render('404') // with ejs
 });
